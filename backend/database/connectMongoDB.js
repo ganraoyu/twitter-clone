@@ -9,4 +9,4 @@ const connectMongoDB = async () => {
     }
 };
 
-module.exports = connectMongoDB; // If you want to use this function elsewhere
+module.exports = connectMongoDB;

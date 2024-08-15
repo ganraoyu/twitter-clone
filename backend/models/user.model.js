@@ -22,7 +22,27 @@ const userSchema = new mongoose.Schema({
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: [], // Default to an empty array
     }],
-}, { timestamps: true });
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: [], // Default to an empty array
+    }]
+}, 
+    profileImg: {
+        type: String,
+        default: '',
+    },
+    bio: {
+        type: String,
+        default: '',
+    },
+    link: {
+        type: String,
+        default: '',
+    },
+
+{ timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

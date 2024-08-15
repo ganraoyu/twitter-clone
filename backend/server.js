@@ -1,7 +1,6 @@
 const express = require('express');
 const authRoutes = require('./routes/auth.routes.js'); 
 const dotenv = require('dotenv');
-const { connect } = require('mongoose');
 const connectMongoDB = require('./database/connectMongoDB.js');
 
 

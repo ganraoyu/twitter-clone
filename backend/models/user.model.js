@@ -2,27 +2,27 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     name: {
-        type: String, // Use capital 'S' for String
+        type: String,
         unique: true,
     },
     fullName: {
-        type: String, // Use capital 'S' for String
+        type: String,
         required: true,
     },
     password: {
-        type: String, // Use capital 'S' for String
+        type: String,
         required: true,
-        minlength: 8, // Fixed typo from minLenght to minlength
+        minlength: 8,
     },
     email: {
-        type: String, // Use capital 'S' for String
+        type: String,
         required: true,
         unique: true,
     },
-    followers: [{ // Changed from 'follower' to 'followers' and fixed the object declaration
+    followers: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Assuming you want to reference the User model
+        ref: 'User',
     }],
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema); // Export the model
+module.exports = mongoose.model('User', userSchema);

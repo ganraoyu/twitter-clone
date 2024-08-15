@@ -1,5 +1,10 @@
 const signup = async (req, res) => {
-    res.send('Signup route');
+    try{
+        const {fullName, username, email, password} = req.body;
+        
+    }   catch (error) {
+        return res.status(400).json({message: error.message});
+    }
 };
 
 const login = async (req, res) => {

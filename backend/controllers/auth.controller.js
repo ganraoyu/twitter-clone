@@ -6,6 +6,11 @@ const signup = async (req, res) => {
     try {
         const { fullName, username, email, password } = req.body;
 
+        // Ensure password is provided
+        if (!password) {
+            return res.status(400).json({ message: 'Password is required' });
+        }
+
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -24,9 +29,13 @@ const signup = async (req, res) => {
             return res.status(400).json({ message: 'Email already exists' });
         }
 
-        // Hash the password
+        // Generate salt
         const salt = await bcrypt.genSalt(10);
+        console.log('Generated salt:', salt);
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, salt);
+        console.log('Hashed password:', hashedPassword);
 
         // Create a new user
         const newUser = new User({
@@ -54,6 +63,7 @@ const signup = async (req, res) => {
             return res.status(400).json({ message: 'User not created' });
         }
     } catch (error) {
+        console.error('Error during signup:', error);
         return res.status(400).json({ message: error.message });
     }
 };

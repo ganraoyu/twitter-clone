@@ -41,9 +41,9 @@ const signup = async (req, res) => {
         console.log('Hashed password:', hashedPassword);
 
         // Create a new user
-        const newUser = new User({
-            fullName,
+        const newUser = new User({  
             username,
+            fullName,
             email,
             password: hashedPassword,
         });
@@ -55,12 +55,12 @@ const signup = async (req, res) => {
             
             res.status(201).json({
                 _id: newUser._id,
-                fullName: newUser.fullName,
                 username: newUser.username,
+                fullName: newUser.fullName,
                 email: newUser.email,
                 followers: newUser.followers,
                 following: newUser.following,
-                coverImg: newUser.coverImg,
+                profileImg: newUser.profileImg,
             });
         } else {
             return res.status(400).json({ message: 'User not created' });
@@ -72,7 +72,29 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    res.send('Login route');
+    try{
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        const isPasswordCorrect = user ? await bcrypt.compare(password, user?.password) : false;
+        if(!user || !isPasswordCorrect ){
+            return res.status(400).json({ message: 'Invalid user or password' });
+        }
+
+        generateTokenAndSetCookie(user._id, res);
+
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            username: user.username,
+            email: user.email,
+            followers: user.followers,
+            following: user.following,
+            profileImg: user.profileImg,
+        });
+    } catch (error) {
+        console.error('Error during login:', error);
+        return res.status(400).json({ message: error.message });
+    }
 };
 
 const logout = async (req, res) => {

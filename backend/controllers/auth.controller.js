@@ -38,20 +38,21 @@ const signup = async (req, res) => {
         
         // Save the new user and send a response
         await newUser.save();
-        if(newUser._id){
+        if (newUser._id) {
             generateTokenAndSetCookie(newUser._id, res); 
-            await newUser.save();
+            
+            res.status(201).json({
+                _id: newUser._id,
+                fullName: newUser.fullName,
+                username: newUser.username,
+                email: newUser.email,
+                followers: newUser.followers,
+                following: newUser.following,
+                coverImg: newUser.coverImg,
+            });
+        } else {
+            return res.status(400).json({ message: 'User not created' });
         }
-        return res.status(201).json({
-            _id: newUser._id,
-            fullName: newUser.fullName,
-            username: newUser.username,
-            email: newUser.email,
-            followers: newUser.followers,
-            following: newUser.following,
-            coverImg: newUser.coverImg,
-        });
-
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }

@@ -98,7 +98,13 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    res.send('Logout route');
+    try {
+        res.cookie('jwt', '', { maxAge: 0 }); // Corrected the syntax here
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Error during logout:', error);
+        return res.status(400).json({ message: error.message });
+    }
 };
 
 module.exports = { signup, login, logout };

@@ -107,4 +107,15 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, logout };
+
+const getUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._Id);
+    }
+    catch (error) {
+        console.error('Error during getUser:', error);
+        return res.status(400).json({ message: error.message });
+    }
+}    
+    
+module.exports = { signup, login, logout, getUser };

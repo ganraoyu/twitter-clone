@@ -110,11 +110,11 @@ const logout = async (req, res) => {
 
 const getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.user._Id);
+        const user = await User.findById(req.user._Id).select
     }
     catch (error) {
         console.error('Error during getUser:', error);
-        return res.status(400).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 }    
     

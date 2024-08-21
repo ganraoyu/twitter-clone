@@ -30,9 +30,14 @@ const followUnfollowUser = async (req, res) => {
         const isFollow = currerntUser.followig.includes(id);
 
         if (isFollowing){
-
+            await User.findByIdAndUpdate(id, {$pull: {followers: req.user._id}});
+            await User.findByIdAndUpdate(req.user._id, {$pull: {following: id}});
+            res.status(200).json({message: 'Unfollowed'});
         } else{
-            
+            await User,User.findByIdAndUpdate(id, {$push: {followers: req.user._id}});
+            await User.findByIdAndUpdate(req.user._id, {$push: {following: id}});
+            //Send Noti to user 
+            res.status(200).json({message: 'Followed'});
         }
     } catch (error) {
         console.log(error);

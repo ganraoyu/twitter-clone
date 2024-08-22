@@ -4,8 +4,15 @@ const dotenv = require('dotenv');
 const connectMongoDB = require('./database/connectMongoDB.js');
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.routes.js');
+const cloudinary = require('cloudinary').v2;
 
 dotenv.config({ path: '../.env' });
+
+cloudinary.config({
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // Added cloud_name, which is required
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;

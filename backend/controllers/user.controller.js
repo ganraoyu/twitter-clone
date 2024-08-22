@@ -1,5 +1,6 @@
 const Notification = require('../models/notification.model');
 const User = require('../models/user.model');
+const bcrypt = require('bcryptjs');
 
 const getUserProfile = async (req, res) => {
     const { username } = req.params;
@@ -84,4 +85,42 @@ const getSuggestedUsers = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, followUnfollowUser, getSuggestedUsers };
+const updateUser = async (req, res) => {
+    const { fullName, username, email,currerntPassword,newPassword, bio, link } = req.body;
+    let {profileImg, coverImg} = req.body;
+
+    const userId = req.user._id;
+
+    try{
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: 'User not found'});
+        }
+        if((!newPassword && currerntPassword) ||(!currerntPassword && newPassword)){
+            return res.status(400).json({message: 'Please enter both current and new password'});
+        }
+        if(currerntPassword && newPassword){
+            const isMatch = await bcrypt.compare(currerntPassword, user.password);
+            if(!isMatch){
+                return res.status(400).json({message: 'Invalid password'});
+            }
+            if(newPassword.length < 8){
+                return res.status(400).json({message: 'Password must be at least 8 characters long'});
+            }
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(newPassword, salt);
+        }
+
+        if (profileImg){
+            user.profileImg = profileImg;
+        }
+
+        if (coverImg){
+            user.coverImg = coverImg;
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server error'});
+    }
+}
+module.exports = { getUserProfile, followUnfollowUser, getSuggestedUsers, updateUser };

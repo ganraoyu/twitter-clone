@@ -1,3 +1,4 @@
+const Notification = require('../models/notification.model');
 const User = require('../models/user.model');
 
 const getUserProfile = async (req, res) => {
@@ -20,7 +21,7 @@ const followUnfollowUser = async (req, res) => {
         const userToModify = await User.findById(id);
         const currentUser = await User.findById(req.user._id);
 
-        if (id === req.user._id) {
+        if (id === req.user._id.toString()) {
             return res.status(400).json({ error: 'You cannot follow yourself' });
         }
 
@@ -37,8 +38,16 @@ const followUnfollowUser = async (req, res) => {
         } else {
             await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } });
             await User.findByIdAndUpdate(req.user._id, { $push: { following: id } });
-            // Send Notification to the user
-            res.status(200).json({ message: 'Followed' });
+
+            // Create and save the notification
+            const newNotification = new Notification({
+                from: req.user._id,
+                to: userToModify._id,
+                type: 'follow',
+            });
+
+            await newNotification.save();
+            res.status(200).json({ message: 'Followed Successfully' });
         }
     } catch (error) {
         console.log(error);

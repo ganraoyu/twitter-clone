@@ -1,7 +1,7 @@
 const Notification = require('../models/notification.model');
 const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
-
+const cloudinary = require('cloudinary').v2;
 const getUserProfile = async (req, res) => {
     const { username } = req.params;
     try { 
@@ -112,12 +112,29 @@ const updateUser = async (req, res) => {
         }
 
         if (profileImg){
-            user.profileImg = profileImg;
+            const uploadedResponse = await cloudinary.uploader.upload(profileImg)
+            profileImg = uploadedResponse.secure_url;
         }
 
         if (coverImg){
-            user.coverImg = coverImg;
+            const uploadedResponse = await cloudinary.uploader.upload(coverImg)
+            coverImg = uploadedResponse.secure_url;
         }
+
+        user.fullName = fullName || user.fullname;
+        user.email = email || user.email;
+        user.bio = bio || user.bio;
+        user.username = username || user.username;
+        user.link = link || user.link;
+        user.profileImg = profileImg || user.profileImg;
+        user.coverImg = coverImg || user.coverImg;
+
+        user = await user.save();
+
+        user.password = null;
+        
+        return res.status(200).json(user);
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Server error'});

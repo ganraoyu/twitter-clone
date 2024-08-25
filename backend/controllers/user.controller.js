@@ -92,7 +92,7 @@ const updateUser = async (req, res) => {
     const userId = req.user._id;
 
     try{
-        const user = await User.findById(userId);
+        let user = await User.findById(userId);
         if(!user){
             return res.status(404).json({message: 'User not found'});
         }
@@ -127,7 +127,7 @@ const updateUser = async (req, res) => {
             coverImg = uploadedResponse.secure_url;
         }
 
-        user.fullName = fullName || user.fullname;
+        user.fullName = fullName || user.fullName;
         user.email = email || user.email;
         user.bio = bio || user.bio;
         user.username = username || user.username;
@@ -143,7 +143,7 @@ const updateUser = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: 'Server error'});
+        return res.status(500).json({error: error.message});
     }
 }
 module.exports = { getUserProfile, followUnfollowUser, getSuggestedUsers, updateUser };

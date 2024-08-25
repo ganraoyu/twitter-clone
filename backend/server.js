@@ -5,6 +5,7 @@ const connectMongoDB = require('./database/connectMongoDB.js');
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.routes.js');
 const cloudinary = require('cloudinary').v2;
+const postRoutes = require('./routes/post.routes.js');
 
 dotenv.config({ path: '../.env' });
 
@@ -23,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-
+app.use('/api/posts', postRoutes);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     connectMongoDB();

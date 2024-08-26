@@ -63,12 +63,26 @@ const deletePost = async (req, res) => {
 const commentOnPost = async (req, res) => {
     try{
         const { text } = req.body;
-        const userId = req.user._id.toString();
+        const userId = req.user._id;
         const postId = req.params.id;
 
         if(!text){
             return res.status(400).json({ message: 'Error' });
         }
+        const post = await Post.findById(postId);
+
+        if(!postId){
+            return res.status(400).json({ message: 'Error' });
+        }
+
+        const comment = {
+            user: userId,
+            text,
+        };
+
+        post.comments.push(comment);
+        await post.save();
+        res.status(201).json(post);
     }catch(error){
         console.log('Error commenting on post:', error);
         res.status(500).json({ message: 'Server error' });

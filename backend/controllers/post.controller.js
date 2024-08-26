@@ -1,3 +1,4 @@
+const Notification = require('../models/notification.model.js');
 const Post = require('../models/post.model.js');
 const cloudinary = require('cloudinary').v2;
 const User = require('../models/user.model.js');
@@ -88,4 +89,38 @@ const commentOnPost = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
-module.exports = { createPost, deletePost, commentOnPost };
+
+const likeUnlikePost = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { id: postId } = req.params; // Rename `post` to `postId` to avoid conflict
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const userLikedPost = post.likes.includes(userId);
+
+        if (userLikedPost) {
+            await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+        } else {
+            post.likes.push(userId);
+            await post.save();
+        }
+
+        const notification = new Notification({
+            from: userId,
+            to: post.user,
+            type: 'like',
+        });
+        await notification.save();
+
+        res.status(200).json(post);
+    } catch (error) {
+        console.log('Error liking/unliking post:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost };

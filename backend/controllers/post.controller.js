@@ -60,4 +60,18 @@ const deletePost = async (req, res) => {
     }
 };
 
-module.exports = { createPost, deletePost };
+const commentOnPost = async (req, res) => {
+    try{
+        const { text } = req.body;
+        const userId = req.user._id.toString();
+        const postId = req.params.id;
+
+        if(!text){
+            return res.status(400).json({ message: 'Error' });
+        }
+    }catch(error){
+        console.log('Error commenting on post:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+module.exports = { createPost, deletePost, commentOnPost };

@@ -121,6 +121,19 @@ const likeUnlikePost = async (req, res) => {
         console.log('Error liking/unliking post:', error);
         res.status(500).json({ message: 'Server error' });
     }
-};
+}; 
 
-module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost };
+const getAllPosts = async(req, res) => {
+    try{
+        const posts = await Post.find().sort({ createdAt: -1 }).populate('user').populate('comments.user');
+
+        if (posts.length === 0){
+            return res.status(404).json({ message: 'No posts found' });
+        }
+        res.status(200).json(posts);
+    } catch (error) {
+        console.log('Error getting all posts:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts };

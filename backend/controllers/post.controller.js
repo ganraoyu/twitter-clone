@@ -104,8 +104,10 @@ const likeUnlikePost = async (req, res) => {
 
         if (userLikedPost) {
             await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+            await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
         } else {
             post.likes.push(userId);
+            await User.updateOne({ _id: userId }, { $push: { likedPosts: postId } });
             await post.save();
         }
 
@@ -125,7 +127,10 @@ const likeUnlikePost = async (req, res) => {
 
 const getAllPosts = async(req, res) => {
     try{
-        const posts = await Post.find().sort({ createdAt: -1 }).populate('user').populate('comments.user');
+        const posts = await Post.find()
+    .sort({ createdAt: -1 })
+    .populate('user', '-password')          // Exclude password from user
+    .populate('comments.user', '-password') // Exclude password from comments.user
 
         if (posts.length === 0){
             return res.status(404).json({ message: 'No posts found' });
@@ -136,4 +141,28 @@ const getAllPosts = async(req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
-module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts };
+
+const getLikedPosts = async(req, res) => {
+    const userId = req.params.id;
+    
+    try{
+        const user = await User.findById(userId)
+        if(!user){
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+        .populate({
+            path:'user',
+            select: '-password'
+        }).populate({
+            path:'comments.user',
+            select: '-password'
+        });
+        res.status(200).json(likedPosts);
+    } catch (error){
+        console.log('Error getting liked posts:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}    
+module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getLikedPosts };

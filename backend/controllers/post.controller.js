@@ -144,7 +144,7 @@ const getAllPosts = async(req, res) => {
 
 const getLikedPosts = async(req, res) => {
     const userId = req.params.id;
-    
+
     try{
         const user = await User.findById(userId)
         if(!user){
@@ -164,5 +164,15 @@ const getLikedPosts = async(req, res) => {
         console.log('Error getting liked posts:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}    
-module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getLikedPosts };
+}   
+
+const getFollowingPosts = async(req, res) => {
+}
+
+const getFollowingPosts = async (req, res) => {
+    try{
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+    }
+}
+module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getLikedPosts, getFollowingPosts };

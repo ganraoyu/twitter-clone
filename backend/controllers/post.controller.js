@@ -166,13 +166,14 @@ const getLikedPosts = async(req, res) => {
     }
 }   
 
-const getFollowingPosts = async(req, res) => {
-}
 
 const getFollowingPosts = async (req, res) => {
     try{
         const userId = req.user._id;
         const user = await User.findById(userId);
+    } catch (error){
+        console.log('Error getting following posts:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 }
 module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getLikedPosts, getFollowingPosts };

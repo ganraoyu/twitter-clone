@@ -5,7 +5,7 @@ const { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getL
 const router = express.Router();
 
 router.get('/all', protectRoute, getAllPosts);
-router.get('following', protectRoute, getFollowingPosts);
+router.get('/following', protectRoute, getFollowingPosts);
 router.get('/likes/:id', protectRoute, getLikedPosts);
 router.post('/create', protectRoute, createPost);
 router.post('/like/:id', protectRoute, likeUnlikePost);

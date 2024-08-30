@@ -168,22 +168,30 @@ const getLikedPosts = async(req, res) => {
 
 
 const getFollowingPosts = async (req, res) => {
-    try{
-        const userId = req.user._id;
+    try {
+        const userId = req.user._id; // Ensure req.user is correctly set
+        console.log('Authenticated user ID:', userId);
+
         const user = await User.findById(userId);
-        if(!user){
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         const following = user.following;
+        console.log('Following users:', following);
 
         const feedPosts = await Post.find({ user: { $in: following } })
-        .sort({ createdAt: -1 })
-        .populate('user', '-password')
-        .populate('comments.user', '-password');
-    } catch (error){
+            .sort({ createdAt: -1 })
+            .populate('user', '-password')
+            .populate('comments.user', '-password');
+        
+        console.log('Retrieved posts:', feedPosts);
+
+        res.status(200).json(feedPosts);
+    } catch (error) {
         console.log('Error getting following posts:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
+
 module.exports = { createPost, deletePost, commentOnPost, likeUnlikePost, getAllPosts, getLikedPosts, getFollowingPosts };

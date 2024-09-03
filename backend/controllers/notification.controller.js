@@ -1,20 +1,27 @@
 const Notification = require("../models/notification.model.js");
 
 const getNotifications = async (req, res) => {
-    try{
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
+
+        console.log('User:', req.user); 
+
         const userId = req.user._id;
-        const notifications = await Notification.find({to: userId}).populate({
+        const notifications = await Notification.find({ to: userId }).populate({
             path: 'from',
             select: 'username profileImg'
         });
 
-        await Notification.updateMany({to: userId}, {read: true});
+        await Notification.updateMany({ to: userId }, { read: true });
 
         res.status(200).json(notifications);
-    }catch(error){
-        res.status(500).json({message: 'Internal server error'});
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 const deleteNotifications = async (req, res) => {
     try{

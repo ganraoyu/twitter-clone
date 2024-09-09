@@ -18,6 +18,6 @@ function App() {
       <RightPanel />
     </div>
   )
-}
+} 
 
 export default App

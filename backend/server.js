@@ -7,7 +7,7 @@ const userRoutes = require('./routes/user.routes.js');
 const cloudinary = require('cloudinary').v2;
 const postRoutes = require('./routes/post.routes.js');
 const notificationRoutes = require('./routes/notification.routes.js');
-
+const PORT = process.env.PORT || 3000;
 dotenv.config({ path: '../.env' });
 
 cloudinary.config({
@@ -27,7 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/notifications', notificationRoutes); // Ensure the route is correctly defined
-console.log('Server.js');
+console.log('Server.js' );
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     connectMongoDB();

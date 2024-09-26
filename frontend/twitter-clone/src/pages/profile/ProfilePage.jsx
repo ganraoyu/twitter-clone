@@ -90,6 +90,7 @@ const ProfilePage = () => {
 								<input
 									type='file'
 									hidden
+									accept="image/*"
 									ref={profileImgRef}
 									onChange={(e) => handleImgChange(e, "profileImg")}
 								/>

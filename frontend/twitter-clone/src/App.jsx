@@ -14,8 +14,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path='/login' element={<LoginPage />} />
-        <Route path='signup' element={<SignUpPage />} />
-        <Route path='notifications' element={<NotificationPage />} />
+        <Route path='/signup' element={<SignUpPage />} />
+        <Route path='/notifications' element={<NotificationPage />} />
+        <Route path='/profile' element={<NotificationPage />} />
       </Routes>
       <RightPanel />
     </div>

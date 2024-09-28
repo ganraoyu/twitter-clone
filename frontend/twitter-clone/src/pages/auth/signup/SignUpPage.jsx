@@ -16,6 +16,13 @@ const SignUpPage = () => {
 		password: "",
 	});
 
+	const {mutate, isError, isPending, eroor} = useMutation({
+		mutation: async() => {
+			try
+		}
+	})
+	
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(formData);
@@ -24,8 +31,6 @@ const SignUpPage = () => {
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
-
-	const isError = false;
 
 	return (
 		<div className='max-w-screen-xl mx-auto flex h-screen px-10'>

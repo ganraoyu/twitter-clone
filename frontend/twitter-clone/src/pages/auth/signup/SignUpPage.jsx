@@ -16,18 +16,33 @@ const SignUpPage = () => {
 		password: "",
 	});
 
-	const {mutate, isError, isPending, eroor} = useMutation({
-		mutation: async() => {
-			try
+	const {mutate, isError, isPending, error} = useMutation({
+		mutationFn: async(email, username, fullName, password) => {
+			try{
+				const response = await fetch('/api/auth/signup', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({email, username, fullName, password}),
+				});
+
+				if (!response.ok) throw new Error('An error occurred while processing the request');
+				const data = await response.json();
+				if(data.error) throw new Error(data.error);
+				console.log(data);
+				return data;
+			} catch (error) {
+				console.log(error);
+			}
 		}
-	})
-	
+})
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(formData);
 	};
-
+ 
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};

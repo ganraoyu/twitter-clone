@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/notifications', notificationRoutes); // Ensure the route is correctly defined
+app.use('/api/notifications', notificationRoutes); 
 console.log('Server.js' );
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
